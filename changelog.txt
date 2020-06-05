@@ -1,0 +1,42 @@
+*** Sezzle Payment Changelog ***
+
+2020-05-12 - Version 3.0.4
+* MODIFY: Updated User Guide.
+
+2020-02-19 - Version 3.0.3
+* MODIFY: Updated Widget Script URL.
+
+2019-12-20 - Version 3.0.2
+* FIX: Order property access through function instead of direct access.
+
+2019-11-19 - Version 3.0.1
+* FIX: Return URL from Sezzle Checkout changed to Checkout URL of merchant website.
+* FEATURE: Added logs for checking API functions.
+* FIX: Check payment capture status before capturing the payment so that already captured orders does not fall into the process.
+
+2019-09-13 - Version 3.0.0
+* FIX: Downgraded to previous stable version due to some conflicts arising in few versions.
+* MODIFY: Delayed capture has been removed.
+* MODIFY: Widget in Cart has been removed.
+
+2019-09-03 - Version 2.0.9
+* FIX: Added check to include settings class when not available.
+
+2019-08-28 - Version 2.0.8
+* MODIFY: Wordpress support version has been changed to 4.4.0 or higher.
+
+2019-08-28 - Version 2.0.7
+* FEATURE: Hiding of Sezzle Pay based on cart total.
+* FEATURE: Sezzle Widget and Sezzle Payment merged into one plugin.
+* FIX : Amount converted to cents while refund.
+
+2019-08-21 - Version 2.0.6
+* FIX: Page hanging issue during order status change for other payment methods.
+
+2019-08-14 - Version 2.0.5
+* FIX: Security fix and quality improvements.
+
+2019-08-12 - Version 2.0.4
+* FEATURE: Delayed Capture.
+* FEATURE: Sezzle Widget for Cart Page.
+* FEATURE: New settings for managing Sezzle Widget.

@@ -1,0 +1,160 @@
+=== Sezzle Woocommerce Payment ===
+Contributors: rishipyth
+Tags: sezzle, installments, payments, paylater
+Requires at least: 5.3.2
+Version: 3.0.4
+Stable tag: 3.0.4
+Tested up to: 5.4.1
+Requires PHP: 5.6
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+Sezzle is a payment gateway for letting your customers buy now and pay later.
+
+## Installation
+
+1. Signup for Sezzle at `https://dashboard.sezzle.com/merchant/signup/`. Login to your dashboard and keep your API Keys page open. You will need it in step `6`.
+2. Make sure you have WooCommerce plugin installed.
+3. Install the Sezzle Payment plugin and activate.
+4. Go to admin > WooCommerce > Settings > Payments > Sezzle.
+5. Fill the form according to the instructions given in the form and save it.
+6. Use the gateway address as `https://gateway.sezzle.com/v1`.
+
+
+### Your store is ready to use Sezzle as a payment gateway.
+
+## Restrict Sezzle based on user roles
+Make sure Sezzle Gateway plugin is `active` in Wordpress admin.
+
+#### Hide Sezzle Payment Gateway
+If you want to hide Sezzle's payment gateway based on user roles
+
+1. Add the following function to your code:
+
+`
+function restrict_sezzle_pay($available_gateways) {
+    unset($available_gateways['sezzlepay']);
+    return $available_gateways;
+}
+`
+
+2. Call the following filter `inside` the user's access deciding code:
+
+`
+add_filter('woocommerce_available_payment_gateways', 'restrict_sezzle_pay');
+`
+
+#### Hide Sezzle Product Widget
+If you want to hide Sezzle's product widget based on user's roles
+
+1. Call the following action `inside` the user's access deciding code:
+
+`
+remove_action('woocommerce_single_product_summary', 'add_sezzle_product_banner');
+`
+
+### Example code with `woocommerce-memberships` plugin:
+
+If you are using `woocommerce-memberships` to deal with user roles and restrictions, you can use the following code to hide Sezzle gateway and product widget based on user's role like so:
+
+`
+$user_id = 1;
+$plan_id = 42;
+$plan = get_post($plan_id);
+// If user does not belong to the plan
+if(!wc_memberships_is_user_member($user_id, $plan)) {
+    // hide the gateway
+    add_filter('woocommerce_available_payment_gateways', 'restrict_sezzle_pay'); // make sure restrict_sezzle_pay function is available
+    // hide the product widget
+    remove_action('woocommerce_single_product_summary', 'add_sezzle_widget_in_product_page');
+}
+`
+
+### Notes
+1. Read about `woocommerce_available_payment_gateways` hook [here](http://hookr.io/filters/woocommerce_available_payment_gateways/).
+
+For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocommerce).
+
+== Changelog ==
+
+= 3.0.4 =
+* MODIFY: Updated User Guide.
+
+= 3.0.3 =
+* MODIFY: Updated Widget Script URL.
+
+= 3.0.2 =
+* FIX: Order key property access through function instead of direct access.
+
+= 3.0.1 =
+* FIX: Return URL from Sezzle Checkout changed to Checkout URL of merchant website.
+* FEATURE: Added logs for checking API functions.
+* FIX: Check payment capture status before capturing the payment so that already captured orders does not fall into the process.
+
+= 3.0.0 =
+* FIX: Downgraded to previous stable version due to some conflicts arising in few versions.
+* MODIFY: Delayed capture has been removed.
+* MODIFY: Widget in Cart has been removed.
+
+= 2.0.9 =
+* FIX: Added check to include settings class when not available.
+
+= 2.0.8 =
+* MODIFY: Wordpress support version has been changed to 4.4.0 or higher.
+
+= 2.0.7 =
+* FEATURE: Hiding of Sezzle Pay based on cart total.
+* FEATURE: Sezzle Widget and Sezzle Payment merged into one plugin.
+* FIX : Amount converted to cents while refund.
+
+= 2.0.6 =
+* FIX: Page hanging issue during order status change for other payment methods.
+
+= 2.0.5 =
+* FIX: Security fix and quality improvements.
+
+= 2.0.4 =
+* FEATURE: Delayed Capture.
+* FEATURE: Sezzle Widget for Cart Page.
+* FEATURE: New settings for managing Sezzle Widget.
+
+== Upgrade Notice ==
+
+= 3.0.4 =
+* Updated User Guide.
+
+= 3.0.3 =
+* Sezzle will control the configuration of widget if you upgrade to this version.
+
+= 3.0.2 =
+* This is reflected in the order confirmation url.
+
+= 3.0.1 =
+* When user will try to get back from Sezzle Checkout, they will get a seamless redirection to Checkout Page.
+* Logs will be generated from now onwards to track the Checkout Flow.
+* Capture status will be checked programmatically to avoid recapturing of captured orders.
+
+= 3.0.0 =
+* Downgraded to previous stable version due to some conflicts arising in few versions.
+* Delayed capture has been removed.
+* Widget in Cart has been removed.
+
+= 2.0.8 =
+* Wordpress support version has been changed to 4.4.0 or higher.
+
+= 2.0.7 =
+* If you have a requirement of hiding Sezzle Pay based on cart total, upgrade to this version.
+* Fixes on amount conversion during refund.
+* Conflict issue with Aweber plugin and as a result, Sezzle Widget and Sezzle Payment merged into one plugin. No need to activate two plugins now. Only one will show up as Sezzle WooCommerce Payment.
+
+= 2.0.6 =
+* This version fixes a major bug.  Upgrade immediately.
+
+= 2.0.5 =
+* This version fixes security bug.  Upgrade immediately.
+
+= 2.0.4 =
+This version has the following major features included.
+* Delayed Capture.
+* Sezzle Widget for Cart Page.
+* New settings for managing Sezzle Widget.

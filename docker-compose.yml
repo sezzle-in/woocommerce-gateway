@@ -1,0 +1,28 @@
+version: '3.6'
+services:
+  woocommerce:
+    container_name: woocommerce
+    # image: hisankaran/woocommerce:latest
+    build:
+      context: ./internal
+      args:
+        WORDPRESS_VERSION: 5.3.2
+    restart: always
+    ports:
+      - 80:8080
+    env_file: 
+      - ./internal/docker.env
+    volumes:
+      - ./sezzle-gateway.php:/var/www/html/wp-content/plugins/sezzle-woocommerce-payment/sezzle-gateway.php
+    depends_on:
+      - woocommerce_db
+  woocommerce_db:
+    container_name: woocommerce_db
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - ./internal/docker.env
+    volumes:
+      - database:/var/lib/mysql
+volumes:
+  database:
