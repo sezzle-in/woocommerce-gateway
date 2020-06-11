@@ -7,6 +7,7 @@ wp plugin install wordpress-importer --activate
 wp plugin install woocommerce --version=$WOOCOMMERCE_VERSION --allow-root --activate
 wp theme install storefront --allow-root --activate
 php -f woocommerce-setup-wizard.php
-wp import ./woocommerce-products.xml --authors=create --allow-root
+wp import ./woocommerce-products.xml --authors=create --quiet --allow-root
+wp wc customer create --user=1 --email="$WOOCOMMERCE_CUSTOMER_EMAIL" --password="$WOOCOMMERCE_CUSTOMER_PASSWORD" --username="$WOOCOMMERCE_CUSTOMER_USERNAME" --first_name='Sezzle' --last_name='Customer' --billing='{"first_name":"Sezzle","last_name":"Customer","phone":"9000090000","address_1":"91Springboard","address_2":"JP Nagar 4th Phase","city":"Bengaluru","state:":"KA","country":"IN","postcode":"560076"}' --shipping='{"first_name":"Sezzle","last_name":"Customer","phone":"9000090000","address_1":"91Springboard","address_2":"JP Nagar 4th Phase","city":"Bengaluru","state:":"KA","country":"IN","postcode":"560076"}'
 
 rm -rf wp-config-sample.php wp-admin/install*.php
