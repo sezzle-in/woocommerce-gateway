@@ -17,7 +17,7 @@ Sezzle plugin directory is mounted to the container.
 docker exec -it woocommerce wp plugin activate sezzle-woocommerce-payment
 ```
 
-Once you activate, you can make changes to plugin/woocommerce-gateway-sezzle.php and see the changes from [wp admin page](http://localhost/wp-admin/admin.php?page=wc-settings&tab=checkout&section=sezzlepay). Login using the admin username and password configured on docker.env
+Once you activate, you can make changes to `sezzle-gateway.php` and see the changes from [wp admin page](http://localhost/wp-admin/admin.php?page=wc-settings&tab=checkout&section=sezzlepay). Login using the admin username and password configured in docker.env
 
 ## Cleanup
 ```bash
