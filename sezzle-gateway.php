@@ -295,8 +295,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 }
                 $body['merchant_completes'] = true;
                 $this->log("Sezzle redirecting");
-                print_r($body);
-                exit();
                 $args = array(
                     'headers' => array(
                         'Authorization' => $this->get_sezzlepay_authorization_code(),
