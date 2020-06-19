@@ -114,7 +114,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             function get_base_url()
             {
                 $enabled_mode = $this->get_option('mode');
-                if($enabled_mode === 'sandbox') {
+                if ($enabled_mode === 'sandbox') {
                     $url = 'https://sandbox.gateway.sezzle.in/v1';
                 } else {
                     $url = 'https://gateway.sezzle.in/v1';
@@ -127,9 +127,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 return $url;
             }
 
-            function get_sezzle_icon() {
+            function get_sezzle_icon()
+            {
                 $enabled_mode = $this->get_option('mode');
-                if($enabled_mode === 'sandbox') {
+                if ($enabled_mode === 'sandbox') {
                     $this->icon = 'https://cdn.shopify.com/s/files/applications/f898f4bc87df465198e1ce07cf07dcd6.png?height=24&1589946841';
                 } else {
                     $this->icon = 'https://cdn.shopify.com/s/files/applications/cf8da439fdbc580ee9a666e47eb462de.png?height=24&1589947003';
@@ -222,15 +223,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
             function get_redirect_url($order)
             {
+                $customer = $order->get_user();
                 $uniqOrderId = uniqid() . "-" . $order->get_id();
                 $order->set_transaction_id($uniqOrderId);
                 $order->save();
                 $body = array(
-                    'amount_in_cents' => (int)(round($order->get_total(), 2) * 100),
+                    'amount_in_cents' => (int) (round($order->get_total(), 2) * 100),
                     'currency_code' => get_woocommerce_currency(),
-                    'order_description' => (string)$uniqOrderId,
-                    'order_reference_id' => (string)$uniqOrderId,
-                    'display_order_reference_id' => (string)$order->get_id(),
+                    'order_description' => (string) $uniqOrderId,
+                    'order_reference_id' => (string) $uniqOrderId,
+                    'display_order_reference_id' => (string) $order->get_id(),
                     'checkout_complete_url' => get_site_url() . '/?wc-api=WC_Gateway_Sezzlepay&key=' . $order->get_order_key(),
                 );
 
@@ -241,6 +243,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     'last_name' => $order->get_billing_last_name(),
                     'email' => $order->get_billing_email(),
                     'phone' => $order->get_billing_phone(),
+                    'created_at' => $customer == FALSE ? null : $customer->user_registered,
                 );
 
                 $body['billing_address'] = array(
@@ -283,7 +286,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             "sku" => $product->get_sku(),
                             "quantity" => $item['qty'],
                             "price" => array(
-                                "amount_in_cents" => (int)(round(($item['line_subtotal'] / $item['qty']), 2) * 100),
+                                "amount_in_cents" => (int) (round(($item['line_subtotal'] / $item['qty']), 2) * 100),
                                 "currency" => get_woocommerce_currency()
                             )
                         );
@@ -292,6 +295,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 }
                 $body['merchant_completes'] = true;
                 $this->log("Sezzle redirecting");
+                print_r($body);
+                exit();
                 $args = array(
                     'headers' => array(
                         'Authorization' => $this->get_sezzlepay_authorization_code(),
@@ -325,7 +330,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 }
             }
 
-            public function dump_api_actions($url, $request, $response, $status_code = null) {
+            public function dump_api_actions($url, $request, $response, $status_code = null)
+            {
                 $this->log($url);
                 $this->log("Request Body");
                 $this->log($request["headers"]["Authorization"]);
@@ -348,12 +354,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $redirectUrl = get_post_meta($order_id, 'sezzle_redirect_url', true);
 
                 // Update order status if it isn't already
-                ?>
+?>
                 <script>
                     var redirectUrl = <?php echo json_encode($redirectUrl); ?>;
                     window.location.replace(redirectUrl);
                 </script>
-                <?php
+<?php
             }
 
             function get_sezzlepay_authorization_code()
@@ -463,16 +469,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         $order->update_status('failed');
                         $redirect_url = wc_get_checkout_url();
                     }
-
-
                 } else if (!$order->is_paid()) {
                     $order->payment_complete($sezzle_reference_id);
                     WC()->cart->empty_cart();
                     $redirect_url = $this->get_return_url($order);
-
                 }
                 wp_redirect($redirect_url);
-
             }
 
             public function process_refund($order_id, $amount = null, $reason = '')
@@ -485,7 +487,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $sezzle_reference_id = $order->get_transaction_id();
                 $body = array(
                     'amount' => array(
-                        'amount_in_cents' => (int)(round($amount, 2) * 100),
+                        'amount_in_cents' => (int) (round($amount, 2) * 100),
                         'currency' => get_woocommerce_currency(),
                     ),
                 );
@@ -532,7 +534,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $details = array();
                 $details["order_number"] = $order->get_order_number();
                 $details["payment_method"] = $order->get_payment_method();
-                $details["amount"] = (int)(round($order->calculate_totals(), 2) * 100);
+                $details["amount"] = (int) (round($order->calculate_totals(), 2) * 100);
                 $details["currency"] = get_woocommerce_currency();
 
                 // Send the gateway reference too. This may be empty.
