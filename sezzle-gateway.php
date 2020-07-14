@@ -199,13 +199,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         'desc_tip' => true,
                         'default' => 'yes'
                     ),
-                    'show-product-page-widget' => array(
-                        'title' => __('Show Sezzle widget in product pages', 'woo_sezzlepay'),
-                        'type' => 'checkbox',
-                        'description' => __('Show the sezzle widget under price label in product pages', 'woo_sezzlepay'),
-                        'desc_tip' => true,
-                        'default' => 'yes'
-                    ),
+                    // 'show-product-page-widget' => array(
+                    //     'title' => __('Show Sezzle widget in product pages', 'woo_sezzlepay'),
+                    //     'type' => 'checkbox',
+                    //     'description' => __('Show the sezzle widget under price label in product pages', 'woo_sezzlepay'),
+                    //     'desc_tip' => true,
+                    //     'default' => 'yes'
+                    // ),
                 );
             }
 
@@ -589,7 +589,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             {
                 $is_payment_active = $this->get_option('enabled') == "yes" ? true : false;
                 $is_merchant_id_entered = strlen($this->get_option('merchant-id')) > 0 ? true : false;
-                $is_widget_active = $this->get_option('show-product-page-widget') == "yes" ? true : false;
+                // $is_widget_active = $this->get_option('show-product-page-widget') == "yes" ? true : false;
                 $is_widget_configured = strlen(explode('|', $this->get_option('target-path'))[0]) > 0 ? true : false;
                 $is_public_key_entered = strlen($this->get_option('public-key')) > 0 ? true : false;
                 $is_private_key_entered = strlen($this->get_option('private-key')) > 0 ? true : false;
@@ -679,10 +679,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         function add_sezzle_product_banner()
         {
             $gateway = WC_Gateway_Sezzlepay::instance();
-            $showWidget = $gateway->get_option('show-product-page-widget');
-            if ($showWidget == 'no') {
-                return;
-            }
+            // $showWidget = $gateway->get_option('show-product-page-widget');
+            // if ($showWidget == 'no') {
+            //     return;
+            // }
             $merchantID = $gateway->get_option('merchant-id');
             echo "
                 <script type='text/javascript'>
