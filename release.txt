@@ -1,0 +1,4 @@
+changelog.txt
+README.md
+readme.txt
+sezzle-gateway.php
