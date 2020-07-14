@@ -195,7 +195,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         'title' => __('Payment option availability in other countries', 'woo_sezzlepay'),
                         'type' => 'checkbox',
                         'label' => __('Enable', 'woo_sezzlepay'),
-                        'description' => __('Enable Sezzlepay gateway in countries other than the United States.', 'woo_sezzlepay'),
+                        'description' => __('Enable Sezzlepay gateway in countries other than India.', 'woo_sezzlepay'),
                         'desc_tip' => true,
                         'default' => 'yes'
                     ),
@@ -640,10 +640,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         {
             global $woocommerce;
             $gateway = WC_Gateway_Sezzlepay::instance();
-            $enableSezzlepayOutsideUSA = $gateway->get_option('payment-option-availability') == 'yes' ? true : false;
-            if (!$enableSezzlepayOutsideUSA && $woocommerce->customer) {
+            $enableSezzlepayOutsideIN = $gateway->get_option('payment-option-availability') == 'yes' ? true : false;
+            if (!$enableSezzlepayOutsideIN && $woocommerce->customer) {
                 $countryCode = $woocommerce->customer->get_billing_country();
-                $allowedCountryCodes = array('US');
+                $allowedCountryCodes = array('IN');
                 if (!in_array($countryCode, $allowedCountryCodes, true)) {
                     unset($available_gateways['sezzlepay']);
                 }
