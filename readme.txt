@@ -1,10 +1,10 @@
 === Sezzle Woocommerce Payment ===
 Contributors: rishipyth
 Tags: sezzle, installments, payments, paylater
-Requires at least: 5.3.2
-Version: 3.0.4
-Stable tag: 3.0.4
-Tested up to: 5.4.1
+Requires at least: 5.4.2
+Version: 3.0.5
+Stable tag: 3.0.5
+Tested up to: 5.4.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -77,6 +77,9 @@ For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocom
 
 == Changelog ==
 
+= 3.0.5 =
+* FIX: Undefined index:Authorization during redirection to Sezzle.
+
 = 3.0.4 =
 * MODIFY: Updated User Guide.
 
@@ -119,6 +122,9 @@ For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocom
 * FEATURE: New settings for managing Sezzle Widget.
 
 == Upgrade Notice ==
+
+= 3.0.5 =
+* The fix is on the logging of data and mainly linked to checkout process. Checkout should work fine now for those who were experiencing issues while redirection.
 
 = 3.0.4 =
 * Updated User Guide.

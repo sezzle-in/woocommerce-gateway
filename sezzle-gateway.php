@@ -2,13 +2,13 @@
 /*
 Plugin Name: Sezzle WooCommerce Payment
 Description: Buy Now Pay Later with Sezzle
-Version: 3.0.4
+Version: 3.0.5
 Author: Sezzle
 Author URI: https://www.sezzle.com/
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Copyright: © 2020 Sezzle
 WC requires at least: 3.0.0
-WC tested up to: 4.1.0
+WC tested up to: 4.2.2
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -328,12 +328,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 }
             }
 
-            public function dump_api_actions($url, $request, $response, $status_code = null)
+            public function dump_api_actions($url, $request = null, $response = null, $status_code = null)
             {
                 $this->log($url);
                 $this->log("Request Body");
-                $this->log($request["headers"]["Authorization"]);
-                $this->log($request["body"]);
+                $this->log(json_encode($request));
                 $this->log("Response Body");
                 $this->log($response);
                 $this->log($status_code);
@@ -691,7 +690,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     Sezzle.render = function () {
                         var script = document.createElement('script');
                         script.type = 'text/javascript';
-                        script.src = 'https://widget.sezzle.com/v1/javascript/price-widget?uuid=$merchantID';
+                        script.src = 'https://widget.sezzle.in/v1/javascript/price-widget?uuid=$merchantID';
                         document.head.appendChild(script);
                     };
                     Sezzle.render();

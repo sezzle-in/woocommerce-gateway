@@ -1,5 +1,15 @@
 #!/bin/sh
 
+mysql_ready() {
+    mysqladmin ping -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD > /dev/null 2>&1
+}
+
+while !(mysql_ready)
+do
+    sleep 3
+    echo "waiting for mysql database to be ready..."
+done
+
 # wp core download --version=$WORDPRESS_VERSION --locale=en_US
 wp config create --dbhost=$MYSQL_HOST --dbname=$MYSQL_DATABASE --dbuser=$MYSQL_USER --dbpass="$MYSQL_PASSWORD" --allow-root 
 wp core install --url=http://localhost --title="LUMA" --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_password=$WORDPRESS_ADMIN_PASSWORD --admin_email=$WORDPRESS_ADMIN_EMAIL --skip-email --allow-root

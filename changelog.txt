@@ -1,5 +1,8 @@
 *** Sezzle Payment Changelog ***
 
+2020-07-02 - Version 3.0.5
+* FIX: Undefined index:Authorization during redirection to Sezzle.
+
 2020-05-12 - Version 3.0.4
 * MODIFY: Updated User Guide.
 

@@ -23,3 +23,14 @@ Once you activate, you can make changes to `sezzle-gateway.php` and see the chan
 ```bash
 docker-compose down --rmi local -v --remove-orphans
 ```
+
+### Update the image
+```bash
+docker build -t hisankaran/woocommerce:latest --build-arg WORDPRESS_VERSION=5.3.2 ./internal/.
+docker push hisankaran/woocommerce:latest
+```
+
+### Create a release archive
+```bash
+cat release.txt | zip -r@ "sezzle-woocommerce-payment.zip"
+```
