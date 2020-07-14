@@ -186,11 +186,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         'description' => __('Look for your Public Key or create one in your Sezzle Dashboard', 'woo_sezzlepay'),
                         'desc_tip' => true,
                     ),
-                    'min-checkout-amount' => array(
-                        'title' => __('Minimum Checkout Amount', 'woo_sezzlepay'),
-                        'type' => 'number',
-                        'default' => ''
-                    ),
+                    // 'min-checkout-amount' => array(
+                    //     'title' => __('Minimum Checkout Amount', 'woo_sezzlepay'),
+                    //     'type' => 'number',
+                    //     'default' => ''
+                    // ),
                     'payment-option-availability' => array(
                         'title' => __('Payment option availability in other countries', 'woo_sezzlepay'),
                         'type' => 'checkbox',
