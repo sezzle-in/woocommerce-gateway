@@ -199,13 +199,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         'desc_tip' => true,
                         'default' => 'yes'
                     ),
-                    // 'show-product-page-widget' => array(
-                    //     'title' => __('Show Sezzle widget in product pages', 'woo_sezzlepay'),
-                    //     'type' => 'checkbox',
-                    //     'description' => __('Show the sezzle widget under price label in product pages', 'woo_sezzlepay'),
-                    //     'desc_tip' => true,
-                    //     'default' => 'yes'
-                    // ),
                 );
             }
 
@@ -676,13 +669,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
         add_action('woocommerce_single_product_summary', 'add_sezzle_product_banner');
 
+        add_action('woocommerce_before_cart', 'add_sezzle_product_banner');
+
+        add_action('woocommerce_before_checkout_form', 'add_sezzle_product_banner');
+
         function add_sezzle_product_banner()
         {
             $gateway = WC_Gateway_Sezzlepay::instance();
-            // $showWidget = $gateway->get_option('show-product-page-widget');
-            // if ($showWidget == 'no') {
-            //     return;
-            // }
             $merchantID = $gateway->get_option('merchant-id');
             echo "
                 <script type='text/javascript'>
