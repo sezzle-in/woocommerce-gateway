@@ -582,18 +582,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             {
                 $is_payment_active = $this->get_option('enabled') == "yes" ? true : false;
                 $is_merchant_id_entered = strlen($this->get_option('merchant-id')) > 0 ? true : false;
-                // $is_widget_active = $this->get_option('show-product-page-widget') == "yes" ? true : false;
-                $is_widget_configured = strlen(explode('|', $this->get_option('target-path'))[0]) > 0 ? true : false;
                 $is_public_key_entered = strlen($this->get_option('public-key')) > 0 ? true : false;
                 $is_private_key_entered = strlen($this->get_option('private-key')) > 0 ? true : false;
+                // $is_widget_active = $this->get_option('show-product-page-widget') == "yes" ? true : false;
+                // $is_widget_configured = strlen(explode('|', $this->get_option('target-path'))[0]) > 0 ? true : false;
 
                 $data = array(
                     'is_payment_active' => $is_payment_active,
                     'active_mode' => $this->get_option('mode'),
-                    'is_widget_active' => $is_widget_active,
-                    'is_widget_configured' => $is_widget_configured,
                     'is_merchant_id_entered' => $is_merchant_id_entered,
                     'merchant_id' => $this->get_option('merchant-id'),
+                    //  'is_widget_active' => $is_widget_active,
+                    // 'is_widget_configured' => $is_widget_configured,
                 );
 
                 if ($is_public_key_entered && $is_private_key_entered && $is_merchant_id_entered) {
@@ -667,28 +667,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
         add_filter('woocommerce_available_payment_gateways', 'remove_sezzlepay_gateway_based_on_billing_country');
 
-        add_action('woocommerce_single_product_summary', 'add_sezzle_product_banner');
-
-        add_action('woocommerce_before_cart', 'add_sezzle_product_banner');
-
-        add_action('woocommerce_before_checkout_form', 'add_sezzle_product_banner');
+        add_action('wp_footer', 'add_sezzle_product_banner');
 
         function add_sezzle_product_banner()
         {
             $gateway = WC_Gateway_Sezzlepay::instance();
             $merchantID = $gateway->get_option('merchant-id');
-            echo "
-                <script type='text/javascript'>
-                    Sezzle = {}
-                    Sezzle.render = function () {
-                        var script = document.createElement('script');
-                        script.type = 'text/javascript';
-                        script.src = 'https://widget.sezzle.in/v1/javascript/price-widget?uuid=$merchantID';
-                        document.head.appendChild(script);
-                    };
-                    Sezzle.render();
-                </script>
-            ";
+            $widgetServerBaseUrl = "https://widget.sezzle.in";
+            echo '
+            <script type="text/javascript">
+            Sezzle={render:function(){var e=document.createElement("script");e.type="text/javascript",e.src="' . $widgetServerBaseUrl . '/v1/javascript/price-widget?uuid=' . $merchantID . ',document.head.appendChild(e)}},Sezzle.render();
+            </script>
+            ';
         }
 
         function sezzle_daily_data_send_event()
