@@ -592,7 +592,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     'active_mode' => $this->get_option('mode'),
                     'is_merchant_id_entered' => $is_merchant_id_entered,
                     'merchant_id' => $this->get_option('merchant-id'),
-                    //  'is_widget_active' => $is_widget_active,
+                    // 'is_widget_active' => $is_widget_active,
                     // 'is_widget_configured' => $is_widget_configured,
                 );
 
@@ -676,7 +676,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $widgetServerBaseUrl = "https://widget.sezzle.in";
             echo '
             <script type="text/javascript">
-            Sezzle={render:function(){var e=document.createElement("script");e.type="text/javascript",e.src="' . $widgetServerBaseUrl . '/v1/javascript/price-widget?uuid=' . $merchantID . ',document.head.appendChild(e)}},Sezzle.render();
+            Sezzle={render:function(){var e=document.createElement("script");e.type="text/javascript",e.src="' . $widgetServerBaseUrl . '/v1/javascript/price-widget?uuid=' . $merchantID . '",document.head.appendChild(e)}},Sezzle.render();
             </script>
             ';
         }
