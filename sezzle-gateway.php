@@ -2,7 +2,7 @@
 /*
 Plugin Name: Sezzle WooCommerce Payment
 Description: Buy Now Pay Later with Sezzle
-Version: 3.0.5
+Version: 4.0.0
 Author: Sezzle
 Author URI: https://www.sezzle.com/
 Tested up to: 5.4.2
@@ -145,6 +145,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         'type' => 'checkbox',
                         'label' => __('Enable Sezzlepay', 'woo_sezzlepay'),
                         'default' => 'yes'
+                    ),
+                    'service_provider' => array(
+                        'title' => __('Service Entity', 'woo_sezzlepay'),
+                        'type' => 'select',
+                        'description' => __('Sezzlepay sandbox can be used to test payments', 'woo_sezzlepay'),
+                        'desc_tip' => true,
+                        'required' => true,
+                        'options' => array(
+                            'us' => __('Sezzle US'),
+                            'in' => __('Sezzle IN'),
+                            'eu' => __('Sezzle EU')
+                        ),
+                        'default' => 'us',
                     ),
                     'title' => array(
                         'title' => __('Title', 'woo_sezzlepay'),

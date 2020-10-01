@@ -2,8 +2,8 @@
 Contributors: rishipyth
 Tags: sezzle, installments, payments, paylater
 Requires at least: 5.4.2
-Version: 3.0.5
-Stable tag: 3.0.5
+Version: 4.0.0
+Stable tag: 4.0.0
 Tested up to: 5.4.2
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -76,6 +76,9 @@ if(!wc_memberships_is_user_member($user_id, $plan)) {
 For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocommerce).
 
 == Changelog ==
+
+= 4.0.0 =
+* FIX: avoid US plugin clash
 
 = 3.0.5 =
 * FIX: Undefined index:Authorization during redirection to Sezzle.
