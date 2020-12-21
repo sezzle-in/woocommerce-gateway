@@ -1,10 +1,10 @@
 === Sezzle Woocommerce Payment ===
 Contributors: rishipyth
 Tags: sezzle, installments, payments, paylater
-Requires at least: 5.4.2
-Version: 4.0.0
-Stable tag: 4.0.0
-Tested up to: 5.4.2
+Requires at least: 5.3.2
+Version: 4.0.1
+Stable tag: 4.0.1
+Tested up to: 5.5.3
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,6 @@ Sezzle is a payment gateway for letting your customers buy now and pay later.
 3. Install the Sezzle Payment plugin and activate.
 4. Go to admin > WooCommerce > Settings > Payments > Sezzle.
 5. Fill the form according to the instructions given in the form and save it.
-6. Use the gateway address as `https://gateway.sezzle.com/v1`.
 
 
 ### Your store is ready to use Sezzle as a payment gateway.
@@ -33,6 +32,9 @@ If you want to hide Sezzle's payment gateway based on user roles
 
 `
 function restrict_sezzle_pay($available_gateways) {
+    if (is_admin()) {
+        return $available_gateways;
+    }
     unset($available_gateways['sezzlepay']);
     return $available_gateways;
 }
@@ -77,8 +79,23 @@ For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocom
 
 == Changelog ==
 
-= 4.0.0 =
-* FIX: avoid US plugin clash
+= 3.1.4 =
+* FIX: Sqaure and Stripe Payment Method Form blocking.
+* FEATURE: Ability to turn on/off installment widget plan from Sezzle settings.
+
+= 3.1.3 =
+* FIX: Multiple Installment Widget.
+
+= 3.1.2 =
+* FEATURE: Installment Plan Widget under Sezzle Payment Option in Checkout Page.
+* FIX: Admin check added in gateway hiding function.
+
+= 3.1.1 =
+* FIX: Failing of sudden orders being already captured.
+* FEATURE: Ability to turn on/off logging.
+
+= 3.1.0 =
+* MODIFY: Transaction Mode added instead of Sezzle API URL.
 
 = 3.0.5 =
 * FIX: Undefined index:Authorization during redirection to Sezzle.
@@ -125,6 +142,24 @@ For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocom
 * FEATURE: New settings for managing Sezzle Widget.
 
 == Upgrade Notice ==
+
+= 3.1.4 =
+* This will fix the Sqaure and Stripe Payment Method Form blocking issue in the Checkout Page.
+* User can decide on turning on/off the installment widget plan from Sezzle settings in WooCommerce Dashboard.
+
+= 3.1.3 =
+* User will not see multiple installment widget on changing shipping addresses.
+
+= 3.1.2 =
+* User will be able to visualize Sezzle installment plan while in Checkout Page.
+* Admin Check added for Gateway removal process.
+
+= 3.1.1 =
+* Orders will not get failed if it is found captured.
+* User can turn on/off Sezzle logging.
+
+= 3.1.0 =
+* User can select between LIVE and SANDBOX mode instead of adding the URL.
 
 = 3.0.5 =
 * The fix is on the logging of data and mainly linked to checkout process. Checkout should work fine now for those who were experiencing issues while redirection.

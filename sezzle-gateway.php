@@ -2,7 +2,7 @@
 /*
 Plugin Name: Sezzle WooCommerce Payment
 Description: Buy Now Pay Later with Sezzle
-Version: 4.0.0
+Version: 4.0.1
 Author: Sezzle
 Author URI: https://www.sezzle.in/
 Tested up to: 5.5.3

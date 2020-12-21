@@ -1,5 +1,23 @@
 *** Sezzle Payment Changelog ***
 
+2020-12-04 - Version 3.1.4
+* FIX: Sqaure and Stripe Payment Method Form blocking.
+* FEATURE: Ability to turn on/off installment widget plan from Sezzle settings.
+
+2020-11-26 - Version 3.1.3
+* FIX: Multiple Installment Widget.
+
+2020-11-25 - Version 3.1.2
+* FEATURE: Installment Plan Widget under Sezzle Payment Option in Checkout Page.
+* FIX: Admin check added in gateway hiding function.
+
+2020-08-31 - Version 3.1.1
+* FIX: Failing of sudden orders being already captured.
+* FEATURE: Ability to turn on/off logging.
+
+2020-08-31 - Version 3.1.0
+* MODIFY: Transaction Mode added instead of Sezzle API URL. Now, user can select between LIVE and SANDBOX mode instead of adding the URL.
+
 2020-07-02 - Version 3.0.5
 * FIX: Undefined index:Authorization during redirection to Sezzle.
 
