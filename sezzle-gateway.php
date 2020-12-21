@@ -4,11 +4,11 @@ Plugin Name: Sezzle WooCommerce Payment
 Description: Buy Now Pay Later with Sezzle
 Version: 4.0.0
 Author: Sezzle
-Author URI: https://www.sezzle.com/
-Tested up to: 5.4.2
+Author URI: https://www.sezzle.in/
+Tested up to: 5.5.3
 Copyright: © 2020 Sezzle
 WC requires at least: 3.0.0
-WC tested up to: 4.2.2
+WC tested up to: 4.7.1
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,6 +37,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             public static $log = false;
             private static $_instance = NULL;
 
+            const SANDBOX_GATEWAY_URL = "https://sandbox.gateway.sezzle.in/v1";
+            const LIVE_GATEWAY_URL = "https://gateway.sezzle.in/v1";
+
             public static function instance()
             {
                 if (is_null(self::$_instance)) {
@@ -63,7 +66,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 add_action('woocommerce_api_' . strtolower(get_class($this)), array($this, 'sezzle_payment_callback'));
             }
 
-            public static function log($message)
+            public function log($message)
             {
                 if (empty(self::$log)) {
                     self::$log = new WC_Logger();
@@ -113,11 +116,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
             function get_base_url()
             {
+                $url = self::LIVE_GATEWAY_URL;
                 $enabled_mode = $this->get_option('mode');
                 if ($enabled_mode === 'sandbox') {
-                    $url = 'https://sandbox.gateway.sezzle.in/v1';
-                } else {
-                    $url = 'https://gateway.sezzle.in/v1';
+                    $url = self::SANDBOX_GATEWAY_URL;
                 }
 
                 if (substr($url, -1) == '/') {
@@ -136,7 +138,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     $this->icon = 'https://cdn.shopify.com/s/files/applications/cf8da439fdbc580ee9a666e47eb462de.png?height=24&1589947003';
                 }
             }
-
+            
             function init_form_fields()
             {
                 $this->form_fields = array(
@@ -149,7 +151,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     'service_provider' => array(
                         'title' => __('Service Entity', 'woo_sezzlepay'),
                         'type' => 'select',
-                        'description' => __('Sezzlepay sandbox can be used to test payments', 'woo_sezzlepay'),
+                        'description' => __('Select the region where you signed up as the merchant', 'woo_sezzlepay'),
                         'desc_tip' => true,
                         'required' => true,
                         'options' => array(
@@ -185,18 +187,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         'description' => __('Look for your Sezzle merchant ID in your Sezzle Dashboard', 'woo_sezzlepay'),
                         'desc_tip' => true,
                     ),
-                    'private-key' => array(
-                        'title' => __('Private Key', 'woo_sezzlepay'),
-                        'type' => 'text',
-                        'default' => '',
-                        'description' => __('Look for your Private Key or create one in your Sezzle Dashboard', 'woo_sezzlepay'),
-                        'desc_tip' => true,
-                    ),
                     'public-key' => array(
                         'title' => __('Public Key', 'woo_sezzlepay'),
                         'type' => 'text',
                         'default' => '',
                         'description' => __('Look for your Public Key or create one in your Sezzle Dashboard', 'woo_sezzlepay'),
+                        'desc_tip' => true,
+                    ),
+                    'private-key' => array(
+                        'title' => __('Private Key', 'woo_sezzlepay'),
+                        'type' => 'text',
+                        'default' => '',
+                        'description' => __('Look for your Private Key or create one in your Sezzle Dashboard', 'woo_sezzlepay'),
                         'desc_tip' => true,
                     ),
                     // 'min-checkout-amount' => array(
@@ -234,11 +236,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $order->set_transaction_id($uniqOrderId);
                 $order->save();
                 $body = array(
-                    'amount_in_cents' => (int) (round($order->get_total(), 2) * 100),
+                    'amount_in_cents' => (int)(round($order->get_total(), 2) * 100),
                     'currency_code' => get_woocommerce_currency(),
-                    'order_description' => (string) $uniqOrderId,
-                    'order_reference_id' => (string) $uniqOrderId,
-                    'display_order_reference_id' => (string) $order->get_id(),
+                    'order_description' => (string)$uniqOrderId,
+                    'order_reference_id' => (string)$uniqOrderId,
+                    'display_order_reference_id' => (string)$order->get_id(),
                     'checkout_complete_url' => get_site_url() . '/?wc-api=WC_Gateway_Sezzlepay&key=' . $order->get_order_key(),
                 );
 
@@ -292,7 +294,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             "sku" => $product->get_sku(),
                             "quantity" => $item['qty'],
                             "price" => array(
-                                "amount_in_cents" => (int) (round(($item['line_subtotal'] / $item['qty']), 2) * 100),
+                                "amount_in_cents" => (int)(round(($item['line_subtotal'] / $item['qty']), 2) * 100),
                                 "currency" => get_woocommerce_currency()
                             )
                         );
@@ -448,6 +450,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                         WC()->cart->empty_cart();
                         $redirect_url = $this->get_return_url($order);
                     } else {
+                        $orderFailed = true;
                         // get the json body string
                         $body_string = wp_remote_retrieve_body($response);
 
@@ -463,13 +466,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             if (!isset($body->id)) {
                                 // return a generic error
                                 $order->add_order_note(__("The payment failed because of an unknown error. Please contact Sezzle from the Sezzle merchant dashboard.", 'woo_sezzlepay'));
-                            } else {
+                            } else if (strtolower($body->id) == "checkout_expired") {
                                 // show the message received from sezzle
                                 $order->add_order_note(__(ucfirst("$body->id : $body->message"), 'woo_sezzlepay'));
+                            } else if (strtolower($body->id) == "checkout_captured") {
+                                $orderFailed = false;
                             }
                         }
 
-                        $order->update_status('failed');
+                        if ($orderFailed) {
+                            $order->update_status('failed');
+                        }
                         $redirect_url = wc_get_checkout_url();
                     }
                 } else if (!$order->is_paid()) {
@@ -490,7 +497,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $sezzle_reference_id = $order->get_transaction_id();
                 $body = array(
                     'amount' => array(
-                        'amount_in_cents' => (int) (round($amount, 2) * 100),
+                        'amount_in_cents' => (int)(round($amount, 2) * 100),
                         'currency' => get_woocommerce_currency(),
                     ),
                 );
@@ -537,7 +544,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $details = array();
                 $details["order_number"] = $order->get_order_number();
                 $details["payment_method"] = $order->get_payment_method();
-                $details["amount"] = (int) (round($order->calculate_totals(), 2) * 100);
+                $details["amount"] = (int)(round($order->calculate_totals(), 2) * 100);
                 $details["currency"] = get_woocommerce_currency();
 
                 // Send the gateway reference too. This may be empty.
@@ -645,6 +652,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         function remove_sezzlepay_gateway_based_on_billing_country($available_gateways)
         {
             global $woocommerce;
+            if (is_admin()) {
+                return $available_gateways;
+            }
             $gateway = WC_Gateway_Sezzlepay::instance();
             $enableSezzlepayOutsideIN = $gateway->get_option('payment-option-availability') == 'yes' ? true : false;
             if (!$enableSezzlepayOutsideIN && $woocommerce->customer) {
@@ -665,6 +675,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         function remove_sezzlepay_gateway_based_on_checkout_total($available_gateways)
         {
             global $woocommerce;
+            if (is_admin() || !isset($woocommerce->cart)) {
+                return $available_gateways;
+            }
             $cart_total = $woocommerce->cart->total;
             $gateway = WC_Gateway_Sezzlepay::instance();
             $min_checkout_amount = $gateway->get_option('min-checkout-amount');
