@@ -19,6 +19,10 @@ docker exec -it woocommerce wp plugin activate sezzle-woocommerce-payment
 
 Once you activate, you can make changes to `sezzle-gateway.php` and see the changes from [wp admin page](http://localhost/wp-admin/admin.php?page=wc-settings&tab=checkout&section=sezzlepay). Login using the admin username and password configured in docker.env
 
+## Nginx Settings update
+```bash
+docker exec -it woocommerce nginx -s reload
+```
 ## Cleanup
 ```bash
 docker-compose down --rmi local -v --remove-orphans

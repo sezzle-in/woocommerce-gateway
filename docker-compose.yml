@@ -14,6 +14,8 @@ services:
       - ./internal/docker.env
     volumes:
       - ./sezzle-gateway.php:/var/www/html/wp-content/plugins/sezzle-woocommerce-payment/sezzle-gateway.php
+      - ./internal/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./internal/nginx/server.conf:/etc/nginx/conf.d/server.conf
     depends_on:
       - woocommerce_db
   woocommerce_db:
