@@ -2,7 +2,7 @@
 /*
 Plugin Name: Sezzle WooCommerce Payment
 Description: Buy Now Pay Later with Sezzle
-Version: 4.0.1
+Version: 4.0.2
 Author: Sezzle
 Author URI: https://www.sezzle.in/
 Tested up to: 5.5.3
@@ -23,7 +23,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+}
+
+if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) || is_plugin_active_for_network( 'woocommerce/woocommerce.php' ) ) {
 
     add_action('plugins_loaded', 'woocommerce_sezzlepay_init');
 
@@ -359,12 +363,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $redirectUrl = get_post_meta($order_id, 'sezzle_redirect_url', true);
 
                 // Update order status if it isn't already
-?>
+                ?>
                 <script>
                     var redirectUrl = <?php echo json_encode($redirectUrl); ?>;
                     window.location.replace(redirectUrl);
                 </script>
-<?php
+                <?php
             }
 
             function get_sezzlepay_authorization_code()
@@ -706,32 +710,107 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             </script>
             ';
         }
-
-        function sezzle_daily_data_send_event()
-        {
-            $gateway = WC_Gateway_Sezzlepay::instance();
-            $gateway->send_daily_heartbeat();
-            $gateway->send_merchant_last_day_orders();
-        }
-
-        add_action('sezzle_daily_data_send_event', 'sezzle_daily_data_send_event');
     }
 }
+
+function sezzle_daily_data_send_event()
+{
+    $gateway = WC_Gateway_Sezzlepay::instance();
+    $gateway->send_daily_heartbeat();
+    $gateway->send_merchant_last_day_orders();
+}
+add_action('sezzle_daily_data_send_event_cron', 'sezzle_daily_data_send_event');
 
 // Activation hook - called when plugin is activated
 register_activation_hook(__FILE__, 'sezzle_activated');
-function sezzle_activated()
+function sezzle_activated( $network_wide )
 {
-    // Schedule cron
-    if (!wp_next_scheduled('sezzle_daily_data_send_event')) {
-        wp_schedule_event(time(), 'daily', 'sezzle_daily_data_send_event');
+    global $wpdb;
+
+    if ( $network_wide ) {
+        // Retrieve all site IDs from this network (WordPress >= 4.6 provides easy to use functions for that).
+        if ( function_exists( 'get_sites' ) && function_exists( 'get_current_network_id' ) ) {
+            $site_ids = get_sites( array( 'fields' => 'ids', 'network_id' => get_current_network_id() ) );
+        } else {
+            $site_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs WHERE site_id = $wpdb->siteid;" );
+        }
+
+        // Install the plugin for all these sites.
+        foreach ( $site_ids as $site_id ) {
+            switch_to_blog( $site_id );
+            sezzle_activate_single_site();
+            restore_current_blog();
+        }
+    } else {
+        sezzle_activate_single_site();
     }
+
 }
+
 
 // Deactivation hook - called when plugin is deactivated
 register_deactivation_hook(__FILE__, 'sezzle_deactivated');
-function sezzle_deactivated()
+function sezzle_deactivated( $network_wide )
 {
-    // Deactivate the cron
-    wp_clear_scheduled_hook('sezzle_daily_data_send_event');
+    global $wpdb;
+
+    if ( $network_wide ) {
+        // Retrieve all site IDs from this network (WordPress >= 4.6 provides easy to use functions for that).
+        if ( function_exists( 'get_sites' ) && function_exists( 'get_current_network_id' ) ) {
+            $site_ids = get_sites( array( 'fields' => 'ids', 'network_id' => get_current_network_id() ) );
+        } else {
+            $site_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs WHERE site_id = $wpdb->siteid;" );
+        }
+        // Install the plugin for all these sites.
+        foreach ( $site_ids as $site_id ) {
+            switch_to_blog( $site_id );
+            sezzle_deactivate_single_site();
+            restore_current_blog();
+        }
+    } else {
+        sezzle_deactivate_single_site();
+    }
+
 }
+
+function sezzle_activate_single_site(){
+    // Schedule cron
+    if (!wp_next_scheduled('sezzle_daily_data_send_event_cron')) {
+        wp_schedule_event(time(), 'daily', 'sezzle_daily_data_send_event_cron');
+    }
+}
+
+function sezzle_deactivate_single_site(){
+    wp_clear_scheduled_hook('sezzle_daily_data_send_event_cron');
+}
+
+function sezzle_on_activate_blog_from_wp_site( $blog ) {
+	if ( is_object( $blog ) && isset( $blog->blog_id ) ) {
+		sezzle_on_activate_blog( (int) $blog->blog_id );
+	}
+}
+
+function sezzle_on_activate_blog($blog_id){
+
+    if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	if ( is_plugin_active_for_network( 'sezzle-woocommerce-payment/sezzle-gateway.php' ) ) {
+		switch_to_blog( $blog_id );
+		sezzle_activate_single_site();
+		restore_current_blog();
+	}
+
+}
+
+// Wpmu_new_blog has been deprecated in 5.1 and replaced by wp_insert_site.
+global $wp_version;
+if ( version_compare( $wp_version,'5.1', '<' ) ) {
+	add_action( 'wpmu_new_blog', 'sezzle_on_activate_blog' );
+}
+else {
+	add_action( 'wp_initialize_site', 'sezzle_on_activate_blog_from_wp_site', 99 );
+}
+
+add_action( 'activate_blog', 'sezzle_on_activate_blog' );
