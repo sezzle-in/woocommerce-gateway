@@ -20,7 +20,7 @@ This document will help you in installing `Sezzle` plugin in WooCommerce. This p
 
 ## Configure Sezzle
 
-* To configure your `Sezzle` plugin in `WooCommerce`, complete the following steps. Prerequisite for this section is to obtain `Merchant ID`, `Private Key` and `Public Key` from [`Sezzle Merchant Dashboard`](https://dashboard.sezzle.com/merchant/). Sign Up if you have not signed up to get the necessities.
+* To configure your `Sezzle` plugin in `WooCommerce`, complete the following steps. Prerequisite for this section is to obtain `Merchant ID`, `Private Key` and `Public Key` from [`Sezzle Merchant Dashboard`](https://dashboard.sezzle.in/merchant/). Sign Up if you have not signed up to get the necessities.
 * Go to `WooCommerce > Settings > Payments > Sezzle`.
 * Configure the plugin as follows:
     * Check the `Enable/Disable` checkbox for enabling `Sezzle`.

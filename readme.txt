@@ -2,7 +2,7 @@
 Contributors: rishipyth
 Tags: sezzle, installments, payments, paylater
 Requires at least: 5.3.2
-Version: 4.0.1
+Version: 4.0.3
 Stable tag: 4.0.1
 Tested up to: 5.5.3
 Requires PHP: 5.6
@@ -13,7 +13,7 @@ Sezzle is a payment gateway for letting your customers buy now and pay later.
 
 ## Installation
 
-1. Signup for Sezzle at `https://dashboard.sezzle.com/merchant/signup/`. Login to your dashboard and keep your API Keys page open. You will need it in step `6`.
+1. Signup for Sezzle at `https://dashboard.sezzle.in/merchant/signup/`. Login to your dashboard and keep your API Keys page open. You will need it in step `6`.
 2. Make sure you have WooCommerce plugin installed.
 3. Install the Sezzle Payment plugin and activate.
 4. Go to admin > WooCommerce > Settings > Payments > Sezzle.
@@ -75,7 +75,7 @@ if(!wc_memberships_is_user_member($user_id, $plan)) {
 ### Notes
 1. Read about `woocommerce_available_payment_gateways` hook [here](http://hookr.io/filters/woocommerce_available_payment_gateways/).
 
-For more information, please visit [Sezzle Docs](https://docs.sezzle.com/#woocommerce).
+For more information, please visit [Sezzle Docs](https://docs.sezzle.in/#woocommerce).
 
 == Changelog ==
 
