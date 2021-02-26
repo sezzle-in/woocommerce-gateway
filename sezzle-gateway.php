@@ -2,7 +2,7 @@
 /*
 Plugin Name: Sezzle WooCommerce Payment
 Description: Buy Now Pay Later with Sezzle
-Version: 4.0.2
+Version: 4.0.3
 Author: Sezzle
 Author URI: https://www.sezzle.in/
 Tested up to: 5.5.3
@@ -320,7 +320,8 @@ if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
                 $submitCheckoutDetailsAndGetRedirectUrl = $this->getSubmitCheckoutDetailsAndGetRedirectUrl();
                 $response = wp_remote_post($submitCheckoutDetailsAndGetRedirectUrl, $args);
                 $encodeResponseBody = wp_remote_retrieve_body($response);
-                $this->dump_api_actions($submitCheckoutDetailsAndGetRedirectUrl, $args, $encodeResponseBody);
+                $response_code = wp_remote_retrieve_response_code($response);
+                $this->dump_api_actions($submitCheckoutDetailsAndGetRedirectUrl, $args, $encodeResponseBody, $response_code);
                 $body = json_decode($encodeResponseBody);
                 if (isset($body->checkout_url)) {
                     // save url to use later
@@ -347,7 +348,7 @@ if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
                 $this->log(json_encode($request));
                 $this->log("Response Body");
                 $this->log($response);
-                $this->log($status_code);
+                $this->log("Response Code - ".$status_code);
             }
 
             function receipt_page($order_id)
@@ -389,7 +390,8 @@ if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
                 $authTokenURL = $this->getAuthTokenUrl();
                 $response = wp_remote_post($authTokenURL, $args);
                 $encodeResponseBody = wp_remote_retrieve_body($response);
-                $this->dump_api_actions($authTokenURL, $args, $encodeResponseBody);
+                $response_code = wp_remote_retrieve_response_code($response);
+                $this->dump_api_actions($authTokenURL, $args, $encodeResponseBody, $response_code);
                 $body = json_decode($encodeResponseBody);
                 return "Bearer $body->token";
             }
@@ -409,7 +411,8 @@ if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 
                 $response = wp_remote_get($url, $args);
                 $encodeResponseBody = wp_remote_retrieve_body($response);
-                $this->dump_api_actions($url, $args, $encodeResponseBody);
+                $response_code = wp_remote_retrieve_response_code($response);
+                $this->dump_api_actions($url, $args, $encodeResponseBody, $response_code);
                 $response = json_decode($encodeResponseBody, true);
                 if (isset($response["captured_at"]) && $response["captured_at"]) {
                     return true;
