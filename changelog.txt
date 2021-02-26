@@ -1,5 +1,11 @@
 *** Sezzle Payment Changelog ***
 
+2021-02-26 - Version 4.0.3
+* Fix: Readme file changes 
+
+2021-01-01 - Version 4.0.2
+* Feature: Multisite Support
+
 2020-12-04 - Version 3.1.4
 * FIX: Sqaure and Stripe Payment Method Form blocking.
 * FEATURE: Ability to turn on/off installment widget plan from Sezzle settings.
